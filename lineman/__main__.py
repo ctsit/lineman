@@ -1,4 +1,4 @@
-"""
+docstr = """
 Lineman
 
 Usage: lineman.py [-h] (<file> <config>) [-o <output.json>]
@@ -35,7 +35,7 @@ _si = 'subject_id'
 _k = 'key'
 _m = 'match_against'
 
-def main(args):
+def main(args=docopt(docstr)):
     """
     Uses a config and a records json file to generate redcap api sendable data
     """
@@ -143,6 +143,6 @@ def rename_events_in_subjects(subjects, events):
             subjects[key][index]['redcap_event_name'] = events[index]['unique_event_name']
 
 if __name__ == '__main__':
-    args = docopt(__doc__)
+    args = docopt(docstr)
     main(args)
     exit()

@@ -8,5 +8,10 @@ setup(name='lineman',
       author_email='pfwhite9@gmail.com',
       license='MIT',
       packages=['lineman'],
+      entry_points={
+          'console_scripts': [
+              'lineman = lineman.__main__:main',
+          ],
+      },
       install_requires=['cappy', 'docopt', 'pyyaml', 'python-dateutil'],
       zip_safe=False)
