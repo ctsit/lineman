@@ -1,0 +1,9 @@
+cappy_version: lineman.json
+event_assignment_strategy: chronological
+arm_order: [1]
+token: BF737141CE84F98B749A204F5A0CEE41
+redcap_url: http://hcvtargetrc.dev/redcap/api/
+subject_id: dm_subjid
+check_mappings:
+  - key: dm_subjid
+    match_against: dm_usubjid
