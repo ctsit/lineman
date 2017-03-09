@@ -71,7 +71,7 @@ def get_redcap_records(api):
     """
     Grab records from the api
     """
-    res = api.export_records()
+    res = api.export_records(fields=['dm_subjid', 'dm_usubjid'], events=['1_arm_1'])
     return json.loads(res.content)
 
 def get_validator(check_against_records, mappings):
@@ -98,7 +98,6 @@ def fix_events(api, records):
     Fixs the redcap_event_name field in the records based on the event names that are in the
     target project
     """
-    redcap_records = get_redcap_records(api)
 
     if (config[_es] == 'chronological'):
         events = get_events(api)
