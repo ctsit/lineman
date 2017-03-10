@@ -1,11 +1,12 @@
 docstr = """
 Lineman
 
-Usage: lineman.py [-h] (<file> <config>) [-o <output.json>]
+Usage: lineman.py [-h] (<file> <config>) [-o <output.json>] [-l <log.json>]
 
 Options:
   -h --help                                     show this message and exit
   -o <output.json> --output=<output.json>       optional output file for results
+  -l <log.json> --log=<log.json>                optional log output for infomation related to the run
 
 """
 import csv
@@ -21,6 +22,7 @@ import cappy
 _file = '<file>'
 _config = '<config>'
 _output = '--output'
+_log = '--log'
 
 # config magic strings
 _cv = 'cappy_version'
@@ -46,10 +48,28 @@ def main(args=docopt(docstr)):
     with open(args[_file], 'r') as json_infile:
         records = json.loads(json_infile.read())
 
+    global report
+    report = {
+        'records': {
+            'num_inputed': 0,
+            'num_redcap': 0,
+            'num_valid': 0,
+            'num_invalid': 0,
+            'validated': [],
+            'not_validated': [],
+            'mappings_done': {},
+        },
+        'subject_event_dict': {}
+    }
+
     api = cappy.API(config[_tk], config[_ru], config[_cv])
 
     records = get_valid_records(api, records, config[_cm])
     records = fix_events(api, records)
+
+    if args.get(_log):
+        with open(args[_log], 'w') as logfile:
+            outfile.write(json.dumps(report))
 
     if args.get(_output):
         with open(args[_output], 'w') as outfile:
@@ -64,8 +84,13 @@ def get_valid_records(api, records, mappings):
     it will not be in this list
     """
     redcap_records = get_redcap_records(api)
+    report['records']['num_inputed'] = len(records)
+    report['records']['num_redcap'] = len(redcap_records)
     is_valid = get_validator(redcap_records, mappings)
-    return [record for record in records if is_valid(record)]
+    validated = [record for record in records if is_valid(record)]
+    report['records']['num_valid'] = len(validated)
+    report['records']['num_invalid'] = len(records) - len(validated)
+    return validated
 
 def get_redcap_records(api):
     """
@@ -89,9 +114,28 @@ def get_validator(check_against_records, mappings):
                 records_match = record.get(map[_k]) == check_record.get(map[_m])
                 if records_have_data and records_match:
                     valid = True
+                    log_mappings_done(map, record, check_record)
                     record[map[_k]] = check_record[map[_k]]
+        log_validated(valid, record)
         return valid
     return validate
+
+def log_mappings_done(map, record, check_record):
+    mapping_zone = report['records']['mappings_done'][report[config[_si]]]
+    if not type(mapping_zone) == type([]):
+        report['records']['mappings_done'][report[config[_si]]] = []
+    report['records']['mappings_done'][report[config[_si]]].append({
+        'key': map[_k],
+        'match_against': map[_m],
+        'before_change': record[map[_k]],
+        'before_change': check_record[map[_m]],
+    })
+
+def log_validated(valid, record):
+    if valid:
+        report['records']['validated'].append(record[config[_si]])
+    else:
+        report['records']['not_validated'].append(record[config[_si]])
 
 def fix_events(api, records):
     """
@@ -139,7 +183,17 @@ def rename_events_in_subjects(subjects, events):
     for key in subjects:
         zipped = list(zip(subjects[key], events))
         for index, record in enumerate(zipped):
+            log_subject_events(subjects, key, index, events)
             subjects[key][index]['redcap_event_name'] = events[index]['unique_event_name']
+
+def log_subject_events(subjects, subjkey, index, events):
+    pairings = report['subject_event_dict'][subjkey]
+    if not type(pairings) == type([]):
+        report['subject_event_dict'][subjkey] = []
+    report['subject_event_dict'][subjkey].append({
+        'date': subjects[key][index]['redcap_event_name'],
+        'event_name': events[index]['unique_event_name']
+    })
 
 if __name__ == '__main__':
     args = docopt(docstr)
