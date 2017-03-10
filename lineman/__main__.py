@@ -69,7 +69,7 @@ def main(args=docopt(docstr)):
 
     if args.get(_log):
         with open(args[_log], 'w') as logfile:
-            outfile.write(json.dumps(report))
+            logfile.write(json.dumps(report, indent=4, sort_keys=True))
 
     if args.get(_output):
         with open(args[_output], 'w') as outfile:
@@ -121,14 +121,14 @@ def get_validator(check_against_records, mappings):
     return validate
 
 def log_mappings_done(map, record, check_record):
-    mapping_zone = report['records']['mappings_done'][report[config[_si]]]
+    mapping_zone = report['records']['mappings_done'].get(record[config[_si]])
     if not type(mapping_zone) == type([]):
-        report['records']['mappings_done'][report[config[_si]]] = []
-    report['records']['mappings_done'][report[config[_si]]].append({
+        report['records']['mappings_done'][record[config[_si]]] = []
+    report['records']['mappings_done'][record[config[_si]]].append({
         'key': map[_k],
         'match_against': map[_m],
-        'before_change': record[map[_k]],
-        'before_change': check_record[map[_m]],
+        'mapped_from': record[map[_k]],
+        'mapped_to': check_record[map[_k]],
     })
 
 def log_validated(valid, record):
@@ -187,11 +187,11 @@ def rename_events_in_subjects(subjects, events):
             subjects[key][index]['redcap_event_name'] = events[index]['unique_event_name']
 
 def log_subject_events(subjects, subjkey, index, events):
-    pairings = report['subject_event_dict'][subjkey]
+    pairings = report['subject_event_dict'].get(subjkey)
     if not type(pairings) == type([]):
         report['subject_event_dict'][subjkey] = []
     report['subject_event_dict'][subjkey].append({
-        'date': subjects[key][index]['redcap_event_name'],
+        'date': subjects[subjkey][index]['redcap_event_name'],
         'event_name': events[index]['unique_event_name']
     })
 
