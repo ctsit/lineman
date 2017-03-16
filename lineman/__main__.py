@@ -97,7 +97,7 @@ def get_redcap_records(api):
     Grab records from the api
     """
     res = api.export_records(fields=['dm_subjid', 'dm_usubjid'], events=['1_arm_1'])
-    return json.loads(res.content)
+    return json.loads(str(res.content, 'utf-8'))
 
 def get_validator(check_against_records, mappings):
     """
@@ -155,7 +155,7 @@ def get_events(api):
     field in the config
     """
     res = api.export_events()
-    redcap_events = json.loads(res.content)
+    redcap_events = json.loads(str(res.content, 'utf-8'))
     events = [event for event in redcap_events if int(event.get('arm_num')) in config[_ao]]
     events.sort(key=lambda e : int(e.get('day_offset')))
     return events
