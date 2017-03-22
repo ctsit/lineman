@@ -178,13 +178,22 @@ def init_subjects(records):
 def rename_events_in_subjects(subjects, events):
     """
     Goes through all subject events and renames the datetime to the event name in the corresponding
-    index of the events list. Uses zip so if one runs out before the other, its fine
+    index of the events list. Uses zip so if subject information runs out before the events
+    get used up it's fine.
+
+    However we need to make sure we dont' go over the maximum amount of events. We pop of any
+    trailing subject events in that case otherwise we get a strange error from redcap about
+    it not being able to parse what we gave it.
     """
     for key in subjects:
         zipped = list(zip(subjects[key], events))
+        max_events = len(events)
         for index, record in enumerate(zipped):
             log_subject_events(subjects, key, index, events)
             subjects[key][index]['redcap_event_name'] = events[index]['unique_event_name']
+        while len(subjects[key] > max_events):
+            subjects[key].pop()
+
 
 def log_subject_events(subjects, subjkey, index, events):
     pairings = report['subject_event_dict'].get(subjkey)
