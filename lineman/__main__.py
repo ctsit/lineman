@@ -191,7 +191,7 @@ def rename_events_in_subjects(subjects, events):
         for index, record in enumerate(zipped):
             log_subject_events(subjects, key, index, events)
             subjects[key][index]['redcap_event_name'] = events[index]['unique_event_name']
-        while len(subjects[key] > max_events):
+        while len(subjects[key]) > max_events:
             subjects[key].pop()
 
 
