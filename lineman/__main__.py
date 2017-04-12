@@ -37,7 +37,7 @@ _si = 'subject_id'
 _k = 'key'
 _m = 'match_against'
 
-def main(args=docopt(docstr)):
+def main(args):
     """
     Uses a config and a records json file to generate redcap api sendable data
     """
@@ -204,7 +204,10 @@ def log_subject_events(subjects, subjkey, index, events):
         'event_name': events[index]['unique_event_name']
     })
 
-if __name__ == '__main__':
+def cli_run():
     args = docopt(docstr)
     main(args)
+
+if __name__ == '__main__':
+    cli_run()
     exit()

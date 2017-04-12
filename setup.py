@@ -10,7 +10,7 @@ setup(name='lineman',
       packages=['lineman'],
       entry_points={
           'console_scripts': [
-              'lineman = lineman.__main__:main',
+              'lineman = lineman.__main__:cli_run',
           ],
       },
       install_requires=['cappy', 'docopt', 'pyyaml', 'python-dateutil'],
