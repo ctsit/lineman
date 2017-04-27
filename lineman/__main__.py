@@ -117,6 +117,8 @@ def get_validator(check_against_records, mappings):
                     log_mappings_done(map, record, check_record)
                     record[map[_k]] = check_record[map[_k]]
         log_validated(valid, record)
+        report['records']['validated'] = sorted(list(set(report['records']['validated'])))
+        report['records']['not_validated'] = sorted(list(set(report['records']['not_validated'])))
         return valid
     return validate
 
