@@ -1,3 +1,4 @@
+_ver = '0.0.1'
 docstr = """
 Lineman
 
@@ -5,10 +6,17 @@ Usage: lineman.py [-h] (<file> <config>) [-o <output.json>] [-l <log.json>]
 
 Options:
   -h --help                                     show this message and exit
+  -v --version                                  show version.
   -o <output.json> --output=<output.json>       optional output file for results
   -l <log.json> --log=<log.json>                optional log output for infomation related to the run
 
 """
+
+#bring in __version__ from version.py
+#per https://stackoverflow.com/a/17626524
+#and https://stackoverflow.com/a/2073599
+with open('version.py') as ver: exec(ver.read())
+
 import csv
 import json
 import pdb
@@ -67,15 +75,17 @@ def main(args):
     records = get_valid_records(api, records, config[_cm])
     records = fix_events(api, records)
 
+    final_report = make_hawk_prey(report)
+
     if args.get(_log):
         with open(args[_log], 'w') as logfile:
-            logfile.write(json.dumps(report, indent=4, sort_keys=True))
+            logfile.write(json.dumps(final_report, indent=4, sort_keys=True))
 
     if args.get(_output):
         with open(args[_output], 'w') as outfile:
             outfile.write(json.dumps(records))
     else:
-        print(json.dumps(records))
+        print(json.dumps(final_report))
 
 def get_valid_records(api, records, mappings):
     """
@@ -91,6 +101,19 @@ def get_valid_records(api, records, mappings):
     report['records']['num_valid'] = len(validated)
     report['records']['num_invalid'] = len(records) - len(validated)
     return validated
+
+def make_hawk_prey(report_dict):
+    """
+    Returns a dictionary containing the source with version, and
+    the log's output so hawk_eye can read it
+    """
+
+    final_report = {'source': "lineman_%s" % _ver, 'output': {}}
+    for key,value in report_dict.items():
+        final_report['output'][key] = value
+
+    return final_report
+
 
 def get_redcap_records(api):
     """
@@ -207,7 +230,7 @@ def log_subject_events(subjects, subjkey, index, events):
     })
 
 def cli_run():
-    args = docopt(docstr)
+    args = docopt(docstr, version='Lineman %s' % __version__)
     main(args)
 
 if __name__ == '__main__':
