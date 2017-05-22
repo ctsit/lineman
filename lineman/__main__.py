@@ -1,4 +1,3 @@
-_ver = '0.0.1'
 docstr = """
 Lineman
 
@@ -15,7 +14,6 @@ Options:
 #bring in __version__ from version.py
 #per https://stackoverflow.com/a/17626524
 #and https://stackoverflow.com/a/2073599
-with open('version.py') as ver: exec(ver.read())
 
 import csv
 import json
@@ -26,6 +24,8 @@ import yaml
 import dateutil.parser as date_parser
 
 import cappy
+
+from lineman.version import __version__
 
 _file = '<file>'
 _config = '<config>'
@@ -108,7 +108,7 @@ def make_hawk_prey(report_dict):
     the log's output so hawk_eye can read it
     """
 
-    final_report = {'source': "lineman_%s" % _ver, 'output': {}}
+    final_report = {'source': "lineman_%s" % __version__, 'output': {}}
     for key,value in report_dict.items():
         final_report['output'][key] = value
 
