@@ -11,10 +11,6 @@ Options:
 
 """
 
-#bring in __version__ from version.py
-#per https://stackoverflow.com/a/17626524
-#and https://stackoverflow.com/a/2073599
-
 import csv
 import json
 import pdb
@@ -34,6 +30,7 @@ _log = '--log'
 
 # config magic strings
 _cv = 'cappy_version'
+_tv = 'template_version'
 _es = 'event_assignment_strategy'
 _ao = 'arm_order'
 _cm = 'check_mappings'
@@ -49,9 +46,7 @@ def main(args):
     """
     Uses a config and a records json file to generate redcap api sendable data
     """
-    with open(args[_config], 'r') as config_file:
-        global config
-        config = yaml.load(config_file.read())
+    set_config(args[_config])
 
     with open(args[_file], 'r') as json_infile:
         records = json.loads(json_infile.read())
@@ -87,6 +82,12 @@ def main(args):
     else:
         print(json.dumps(final_report))
 
+def set_config(config_file_path):
+    with open(config_file_path, 'r') as config_file:
+        global config
+        config = yaml.load(config_file.read())
+    return config
+
 def get_valid_records(api, records, mappings):
     """
     Returns records that have a subjecto to latch onto in redcap. For instance if there
@@ -108,7 +109,7 @@ def make_hawk_prey(report_dict):
     the log's output so hawk_eye can read it
     """
 
-    final_report = {'source': "lineman_%s" % __version__, 'output': {}}
+    final_report = {'source': "lineman_%s" % config[_tv], 'output': {}}
     for key,value in report_dict.items():
         final_report['output'][key] = value
 

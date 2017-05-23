@@ -1,9 +1,12 @@
 from setuptools import setup
 
-#bring in __version__ from source
+#bring in __version__ from sourcecode
 #per https://stackoverflow.com/a/17626524
 #and https://stackoverflow.com/a/2073599
-with open('lineman/version.py') as ver: exec(ver.read())
+
+with open('lineman/version.py') as ver:
+    exec(ver.read())
+
 setup(name='lineman',
       version=__version__,
       description='Lineman fixes data problems that will keep your data from going into redcap.',
