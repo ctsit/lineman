@@ -7,3 +7,12 @@ subject_id: dm_subjid
 check_mappings:
   - key: dm_subjid
     match_against: dm_usubjid
+
+# the following requests_options uses a workaround
+# needed with some https servers
+# if you find that the lineman run hangs, go to 
+# http://docs.python-requests.org/en/master/
+# to see what options to may need
+
+# requests_options:
+#   verify: false

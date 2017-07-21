@@ -32,6 +32,7 @@ _cm = 'check_mappings'
 _tk = 'token'
 _ru = 'redcap_url'
 _si = 'subject_id'
+_ro = 'requests_options'
 
 # config mapping magic strings
 _k = 'key'
@@ -62,7 +63,7 @@ def main(args):
         'subject_event_dict': {}
     }
 
-    api = cappy.API(config[_tk], config[_ru], config[_cv])
+    api = cappy.API(config[_tk], config[_ru], config[_cv], config.get(_ro))
 
     records = get_valid_records(api, records, config[_cm])
     records = fix_events(api, records)
