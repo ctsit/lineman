@@ -17,7 +17,7 @@ setup(name='lineman',
       packages=['lineman'],
       entry_points={
           'console_scripts': [
-              'lineman = lineman.__main__:cli_run',
+              'lineman = lineman.__main__:main',
           ],
       },
       install_requires=['cappy==1.1.1',
