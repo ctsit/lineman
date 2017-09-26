@@ -42,11 +42,10 @@ _si = 'subject_id'
 _k = 'key'
 _m = 'match_against'
 
-def main():
+def main(args):
     """
     Uses a config and a records json file to generate redcap api sendable data
     """
-    args = docopt(docstr, version=__version__)
     set_config(args[_config])
 
     with open(args[_file], 'r') as json_infile:
@@ -231,6 +230,10 @@ def log_subject_events(subjects, subjkey, index, events):
         'event_name': events[index]['unique_event_name']
     })
 
+def cli_run():
+    args = docopt(docstr, version='Lineman %s' % __version__)
+    main(args)
+
 if __name__ == '__main__':
-    main()
+    cli_run()
     exit()
