@@ -1,7 +1,7 @@
 docstr = """
 Lineman
 
-Usage: lineman.py [-h] (<file> <config>) [-o <output.json>] [-l <log.json>]
+Usage: lineman.py [-hv] (<file> <config>) [-o <output.json>] [-l <log.json>]
 
 Options:
   -h --help                                     show this message and exit
