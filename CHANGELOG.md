@@ -14,10 +14,17 @@ Example
 ### Fixed
   - Fixed the missing copyright details in LICENSE file
 
-## [1.1.0] 2017-08-14
+## [1.2.0] 2017-10-26
+### Summary
+  - This release addresses the need to have specific version of dependencies
+### Added
+  - add a 'v' option to the docstring (Matthew McConnell)
+  - add specific versions of dependencies (Matthew McConnell)
 
-This release adds hawkeye interoperability, allowing Linemans logs to be consumed by Hawkeye and 
-emailed out.
+## [1.1.0] 2017-08-14
+### Summary
+  - This release adds hawkeye interoperability, allowing Linemans logs to be consumed by Hawkeye and 
+    emailed out.
 ### Added
   - have hawkeye interop use a setting called template version, and some code clean up (Matthew McConnell)
   - add unit tests to test hawk_eye interop (Matthew McConnell)
